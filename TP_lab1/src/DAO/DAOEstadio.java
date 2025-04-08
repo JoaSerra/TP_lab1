@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class DAOEstadio implements IDAO<Estadio> {
     private final String DB_JDBC_DRIVER = "org.h2.Driver";
-    private final String DB_JDBC_URL = "jdbc:h2:C:\\Users\\joahs\\Escritorio\\TP_lab1\\BD_tp;AUTO_SERVER=TRUE";
+    private final String DB_JDBC_URL = "jdbc:h2:C:\\Users\\joahs\\Documents\\TPs facultad\\TP_lab1_final_SERRA\\BD_tp;AUTO_SERVER=TRUE";
     private final String DB_JDBC_USER = "sa";
     private final String DB_JDBC_PASS = "";
 
