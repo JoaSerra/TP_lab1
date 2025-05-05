@@ -30,7 +30,6 @@ target/
 .idea/
 *.iml
 *.iws
-out/
 
 # OS generated
 .DS_Store
