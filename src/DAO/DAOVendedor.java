@@ -1,33 +1,28 @@
 package DAO;
 
-import model.Espectaculo;
+import model.Vendedor;
 import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class DAOEspectaculo implements IDAO<Espectaculo> {
-    private final String DB_JDBC_DRIVER = "org.h2.Driver";
-    private final String DB_JDBC_URL = "jdbc:h2:C:\\Users\\joahs\\Documents\\TPs facultad\\TP_lab1_final_SERRA\\BD_tp;AUTO_SERVER=TRUE";
-    private final String DB_JDBC_USER = "sa";
-    private final String DB_JDBC_PASS = "";
-
+public class DAOVendedor implements IDAO<Vendedor>{
 
     @Override
-    public void guardar(Espectaculo elemento) throws DAOExeption {
+    public void guardar(Vendedor elemento) throws DAOExeption {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             Class.forName(DB_JDBC_DRIVER);
-            connection = DriverManager.getConnection(DB_JDBC_URL, DB_JDBC_USER, DB_JDBC_PASS);
-            preparedStatement = connection.prepareStatement("INSERT INTO ESPECTACULO VALUES(?,?,?,?,?)"); //
+            connection = DriverManager.getConnection(DB_JDBC_URL,DB_JDBC_USER,DB_JDBC_PASS);
+            preparedStatement = connection.prepareStatement("INSERT INTO VENDEDOR VALUES(?,?,?,?)"); //
+
             //Valores para setear
-            preparedStatement.setInt(1, elemento.getIdEspectaculo());
+            preparedStatement.setInt(1, elemento.getDni());
             preparedStatement.setString(2, elemento.getNombre());
-            preparedStatement.setDouble(3, elemento.getPrecioBase());
-            preparedStatement.setDate(4, elemento.getFechaSQL());
-            preparedStatement.setInt(5, elemento.getEstadio().getIdEstadio());
+            preparedStatement.setString(3, elemento.getApellido());
+            preparedStatement.setString(4, elemento.getTelefono());
 
             preparedStatement.executeUpdate(); //ejecuto SQL
 
@@ -50,21 +45,20 @@ public class DAOEspectaculo implements IDAO<Espectaculo> {
     }
 
     @Override
-    public void modificar(Espectaculo elemento) throws DAOExeption {
+    public void modificar(Vendedor elemento) throws DAOExeption {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_JDBC_URL,DB_JDBC_USER,DB_JDBC_PASS);
-            preparedStatement = connection.prepareStatement("UPDATE ESPECTACULO SET NOMBRE=?,PRECIO_BASE=?,FECHA=?,ID_ESTADIO=? WHERE ID_ESPECTACULO=?");
+            preparedStatement = connection.prepareStatement("UPDATE VENDEDOR SET NOMBRE=?,APELLIDO=?,TELEFONO=? WHERE DNI=?");
 
             //Valores a modificar
             preparedStatement.setString(1, elemento.getNombre());
-            preparedStatement.setDouble(2, elemento.getPrecioBase());
-            preparedStatement.setDate(3, elemento.getFechaSQL());
-            preparedStatement.setInt(4, elemento.getEstadio().getIdEstadio());
-            preparedStatement.setInt(5, elemento.getIdEspectaculo());
+            preparedStatement.setString(2, elemento.getApellido());
+            preparedStatement.setString(3, elemento.getTelefono());
+            preparedStatement.setInt(4, elemento.getDni());
 
             preparedStatement.executeUpdate(); //ejecuto SQL
 
@@ -88,14 +82,14 @@ public class DAOEspectaculo implements IDAO<Espectaculo> {
 
 
     @Override
-    public void eliminar(int idEspectaculo) throws DAOExeption, JdbcSQLIntegrityConstraintViolationException {
+    public void eliminar(int dni) throws DAOExeption, JdbcSQLIntegrityConstraintViolationException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_JDBC_URL,DB_JDBC_USER,DB_JDBC_PASS);
-            preparedStatement = connection.prepareStatement("DELETE FROM ESPECTACULO WHERE ID_ESPECTACULO=?");
-            preparedStatement.setInt(1,idEspectaculo);
+            preparedStatement = connection.prepareStatement("DELETE FROM VENDEDOR WHERE DNI=?");
+            preparedStatement.setInt(1,dni);
 
             preparedStatement.executeUpdate();
         } catch (SQLException | ClassNotFoundException e) {
@@ -119,35 +113,31 @@ public class DAOEspectaculo implements IDAO<Espectaculo> {
         }
     }
 
-
     @Override
-    public Espectaculo buscar(int idEspectaculo) throws DAOExeption {
+    public Vendedor buscar(int dni) throws DAOExeption {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        Espectaculo espectaculoAux = null;
+        Vendedor admininAux = null;
 
         try {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_JDBC_URL,DB_JDBC_USER,DB_JDBC_PASS);
-            preparedStatement = connection.prepareStatement("SELECT * FROM ESPECTACULO WHERE ID_ESPECTACULO=?");
-            preparedStatement.setInt(1, idEspectaculo);
+            preparedStatement = connection.prepareStatement("SELECT * FROM VENDEDOR WHERE DNI=?");
+            preparedStatement.setInt(1, dni);
             ResultSet rs = preparedStatement.executeQuery();
 
             if(rs.next()){
-                espectaculoAux = new Espectaculo();
-                espectaculoAux.setIdEspectaculo(rs.getInt("ID_ESPECTACULO"));
-                espectaculoAux.setNombre(rs.getString("NOMBRE"));
-                espectaculoAux.setPrecioBase(rs.getDouble("PRECIO_BASE"));
-                espectaculoAux.setFechaConSQL(rs.getDate("FECHA"));
-                espectaculoAux.setEstadio(rs.getInt("ID_ESTADIO"));
+                admininAux = new Vendedor();
+                admininAux.setDni(rs.getInt("DNI"));
+                admininAux.setNombre(rs.getString("NOMBRE"));
+                admininAux.setApellido(rs.getString("APELLIDO"));
+                admininAux.setTelefono(rs.getString("TELEFONO"));
             }
 
         }catch (ClassNotFoundException | SQLException e){
             e.printStackTrace();
             throw new DAOExeption("Error al acceder a la base de datos");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
+        }finally {
             try {
                 if (preparedStatement != null) {
                     preparedStatement.close();
@@ -160,37 +150,36 @@ public class DAOEspectaculo implements IDAO<Espectaculo> {
                 throw new DAOExeption("ERROR");
             }
         }
-        return espectaculoAux;
+        return admininAux;
     }
 
     @Override
-    public ArrayList<Espectaculo> buscarTodos() throws DAOExeption{
+    public ArrayList<Vendedor> buscarTodos() throws DAOExeption {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        Espectaculo espectaculoAux;
-        ArrayList<Espectaculo> espectaculosAux = new ArrayList<>();
+        Vendedor vendedorAux;
+        ArrayList<Vendedor> vendedoresAux = new ArrayList<>();
 
         try{
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_JDBC_URL,DB_JDBC_USER,DB_JDBC_PASS);
-            preparedStatement = connection.prepareStatement("SELECT * FROM ESPECTACULO");
+            preparedStatement = connection.prepareStatement("SELECT * FROM VENDEDOR");
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()){
-                espectaculoAux = new Espectaculo();
-                espectaculoAux.setIdEspectaculo(rs.getInt("ID_ESPECTACULO"));
-                espectaculoAux.setNombre(rs.getString("NOMBRE"));
-                espectaculoAux.setPrecioBase(rs.getDouble("PRECIO_BASE"));
-                espectaculoAux.setFechaConSQL(rs.getDate("FECHA"));
-                espectaculoAux.setEstadio(rs.getInt("ID_ESTADIO"));
-                espectaculosAux.add(espectaculoAux);
+                vendedorAux = new Vendedor();
+                vendedorAux.setDni(rs.getInt("DNI"));
+                vendedorAux.setNombre(rs.getString("NOMBRE"));
+                vendedorAux.setApellido(rs.getString("APELLIDO"));
+                vendedorAux.setTelefono(rs.getString("TELEFONO"));
+                vendedoresAux.add(vendedorAux);
             }
+
         }
         catch (ClassNotFoundException | SQLException e){
             throw new DAOExeption(e.getMessage());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
+        }
+        finally {
             try {
                 if (preparedStatement != null) {
                     preparedStatement.close();
@@ -202,6 +191,7 @@ public class DAOEspectaculo implements IDAO<Espectaculo> {
                 throw new DAOExeption(e.getMessage());
             }
         }
-        return espectaculosAux;
+        return vendedoresAux;
     }
 }
+

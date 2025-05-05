@@ -1,34 +1,29 @@
 package DAO;
 
-import model.Entrada;
+import model.Espectaculo;
 import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
-import service.ServiceExeption;
 
-import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class DAOEntrada implements IDAO<Entrada> {
-    private final String DB_JDBC_DRIVER = "org.h2.Driver";
-    private final String DB_JDBC_URL = "jdbc:h2:C:\\Users\\joahs\\Documents\\TPs facultad\\TP_lab1_final_SERRA\\BD_tp;AUTO_SERVER=TRUE";
-    private final String DB_JDBC_USER = "sa";
-    private final String DB_JDBC_PASS = "";
+public class DAOEspectaculo implements IDAO<Espectaculo> {
 
 
     @Override
-    public void guardar(Entrada elemento) throws DAOExeption {
+    public void guardar(Espectaculo elemento) throws DAOExeption {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_JDBC_URL, DB_JDBC_USER, DB_JDBC_PASS);
-            preparedStatement = connection.prepareStatement("INSERT INTO ENTRADA VALUES(?,?,?,?)"); //
+            preparedStatement = connection.prepareStatement("INSERT INTO ESPECTACULO VALUES(?,?,?,?,?)"); //
             //Valores para setear
-            preparedStatement.setInt(1, elemento.getNroEntrada());
-            preparedStatement.setInt(2, elemento.getEspectaculo().getIdEspectaculo());
-            preparedStatement.setDouble(3, elemento.getPrecio());
-            preparedStatement.setInt(4, elemento.getUbicacion().getIdUbi());
+            preparedStatement.setInt(1, elemento.getIdEspectaculo());
+            preparedStatement.setString(2, elemento.getNombre());
+            preparedStatement.setDouble(3, elemento.getPrecioBase());
+            preparedStatement.setDate(4, elemento.getFechaSQL());
+            preparedStatement.setInt(5, elemento.getEstadio().getIdEstadio());
 
             preparedStatement.executeUpdate(); //ejecuto SQL
 
@@ -51,20 +46,21 @@ public class DAOEntrada implements IDAO<Entrada> {
     }
 
     @Override
-    public void modificar(Entrada elemento) throws DAOExeption {
+    public void modificar(Espectaculo elemento) throws DAOExeption {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_JDBC_URL,DB_JDBC_USER,DB_JDBC_PASS);
-            preparedStatement = connection.prepareStatement("UPDATE ENTRADA SET ID_ESPECTACULO=?,PRECIO=?,UBICACION=? WHERE NRO_ENTRADA=?");
+            preparedStatement = connection.prepareStatement("UPDATE ESPECTACULO SET NOMBRE=?,PRECIO_BASE=?,FECHA=?,ID_ESTADIO=? WHERE ID_ESPECTACULO=?");
 
             //Valores a modificar
-            preparedStatement.setInt(1, elemento.getEspectaculo().getIdEspectaculo());
-            preparedStatement.setDouble(2, elemento.getPrecio());
-            preparedStatement.setInt(3, elemento.getUbicacion().getIdUbi());
-            preparedStatement.setInt(4, elemento.getNroEntrada());
+            preparedStatement.setString(1, elemento.getNombre());
+            preparedStatement.setDouble(2, elemento.getPrecioBase());
+            preparedStatement.setDate(3, elemento.getFechaSQL());
+            preparedStatement.setInt(4, elemento.getEstadio().getIdEstadio());
+            preparedStatement.setInt(5, elemento.getIdEspectaculo());
 
             preparedStatement.executeUpdate(); //ejecuto SQL
 
@@ -88,14 +84,14 @@ public class DAOEntrada implements IDAO<Entrada> {
 
 
     @Override
-    public void eliminar(int nroEntrada) throws DAOExeption, JdbcSQLIntegrityConstraintViolationException {
+    public void eliminar(int idEspectaculo) throws DAOExeption, JdbcSQLIntegrityConstraintViolationException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_JDBC_URL,DB_JDBC_USER,DB_JDBC_PASS);
-            preparedStatement = connection.prepareStatement("DELETE FROM ENTRADA WHERE NRO_ENTRADA=?");
-            preparedStatement.setInt(1,nroEntrada);
+            preparedStatement = connection.prepareStatement("DELETE FROM ESPECTACULO WHERE ID_ESPECTACULO=?");
+            preparedStatement.setInt(1,idEspectaculo);
 
             preparedStatement.executeUpdate();
         } catch (SQLException | ClassNotFoundException e) {
@@ -119,31 +115,33 @@ public class DAOEntrada implements IDAO<Entrada> {
         }
     }
 
+
     @Override
-    public Entrada buscar(int nroEntrada) throws DAOExeption {
+    public Espectaculo buscar(int idEspectaculo) throws DAOExeption {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        Entrada entradaAux = null;
+        Espectaculo espectaculoAux = null;
 
         try {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_JDBC_URL,DB_JDBC_USER,DB_JDBC_PASS);
-            preparedStatement = connection.prepareStatement("SELECT * FROM ENTRADA WHERE NRO_ENTRADA=?");
-            preparedStatement.setInt(1, nroEntrada);
+            preparedStatement = connection.prepareStatement("SELECT * FROM ESPECTACULO WHERE ID_ESPECTACULO=?");
+            preparedStatement.setInt(1, idEspectaculo);
             ResultSet rs = preparedStatement.executeQuery();
 
-            while(rs.next()){
-                entradaAux = new Entrada();
-                entradaAux.setNroEntrada(rs.getInt("NRO_ENTRADA"));
-                entradaAux.setEspectaculoId(rs.getInt("ID_ESPECTACULO"));
-                entradaAux.setPrecio(rs.getDouble("PRECIO"));
-                entradaAux.setUbicacionId(rs.getInt("UBICACION"));
+            if(rs.next()){
+                espectaculoAux = new Espectaculo();
+                espectaculoAux.setIdEspectaculo(rs.getInt("ID_ESPECTACULO"));
+                espectaculoAux.setNombre(rs.getString("NOMBRE"));
+                espectaculoAux.setPrecioBase(rs.getDouble("PRECIO_BASE"));
+                espectaculoAux.setFechaConSQL(rs.getDate("FECHA"));
+                espectaculoAux.setEstadio(rs.getInt("ID_ESTADIO"));
             }
 
         }catch (ClassNotFoundException | SQLException e){
             e.printStackTrace();
             throw new DAOExeption("Error al acceder a la base de datos");
-        } catch (ServiceExeption e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             try {
@@ -158,34 +156,35 @@ public class DAOEntrada implements IDAO<Entrada> {
                 throw new DAOExeption("ERROR");
             }
         }
-        return entradaAux;
+        return espectaculoAux;
     }
 
     @Override
-    public ArrayList<Entrada> buscarTodos() throws DAOExeption {
+    public ArrayList<Espectaculo> buscarTodos() throws DAOExeption{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        Entrada entradaAux;
-        ArrayList<Entrada> entradasAux = new ArrayList<>();
+        Espectaculo espectaculoAux;
+        ArrayList<Espectaculo> espectaculosAux = new ArrayList<>();
 
         try{
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_JDBC_URL,DB_JDBC_USER,DB_JDBC_PASS);
-            preparedStatement = connection.prepareStatement("SELECT * FROM ENTRADA");
+            preparedStatement = connection.prepareStatement("SELECT * FROM ESPECTACULO");
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()){
-                entradaAux = new Entrada();
-                entradaAux.setNroEntrada(rs.getInt("NRO_ENTRADA"));
-                entradaAux.setEspectaculoId(rs.getInt("ID_ESPECTACULO"));
-                entradaAux.setPrecio(rs.getDouble("PRECIO"));
-                entradaAux.setUbicacionId(rs.getInt("UBICACION"));
-                entradasAux.add(entradaAux);
+                espectaculoAux = new Espectaculo();
+                espectaculoAux.setIdEspectaculo(rs.getInt("ID_ESPECTACULO"));
+                espectaculoAux.setNombre(rs.getString("NOMBRE"));
+                espectaculoAux.setPrecioBase(rs.getDouble("PRECIO_BASE"));
+                espectaculoAux.setFechaConSQL(rs.getDate("FECHA"));
+                espectaculoAux.setEstadio(rs.getInt("ID_ESTADIO"));
+                espectaculosAux.add(espectaculoAux);
             }
         }
         catch (ClassNotFoundException | SQLException e){
             throw new DAOExeption(e.getMessage());
-        } catch (ServiceExeption e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             try {
@@ -199,7 +198,6 @@ public class DAOEntrada implements IDAO<Entrada> {
                 throw new DAOExeption(e.getMessage());
             }
         }
-        return entradasAux;
+        return espectaculosAux;
     }
-
 }
