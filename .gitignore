@@ -18,6 +18,7 @@ out/
 
 # Archivos locales
 pom.xml
+.$UML_VentaEntradas.drawio.bkp
 
 # Maven
 target/
