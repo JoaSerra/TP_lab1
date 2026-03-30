@@ -1,7 +1,7 @@
 package service;
 
 import DAO.DAOEntrada;
-import DAO.DAOExeption;
+import DAO.DAOException;
 import model.Entrada;
 import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 
@@ -18,7 +18,7 @@ public class ServiceEntrada {
         try {
             daoEntrada.guardar(entrada);
             System.out.println("Entrada guardada");
-        } catch(DAOExeption e) {
+        } catch(DAOException e) {
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -26,7 +26,7 @@ public class ServiceEntrada {
     public void modificar(Entrada entrada) throws ServiceExeption {
         try{
             daoEntrada.modificar(entrada);
-        } catch(DAOExeption e) {
+        } catch(DAOException e) {
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -36,7 +36,7 @@ public class ServiceEntrada {
         try{
             entrada = daoEntrada.buscar(id);
             return entrada;
-        } catch(DAOExeption e){
+        } catch(DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -45,7 +45,7 @@ public class ServiceEntrada {
         try{
             daoEntrada.eliminar(id);
             System.out.println("Entrada eliminada");
-        }catch (DAOExeption e){
+        }catch (DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -55,7 +55,7 @@ public class ServiceEntrada {
         try {
             entradas = daoEntrada.buscarTodos();
             return entradas;
-        }catch (DAOExeption e){
+        }catch (DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }

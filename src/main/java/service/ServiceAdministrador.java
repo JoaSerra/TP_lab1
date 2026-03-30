@@ -1,7 +1,7 @@
 package service;
 
 import DAO.DAOAdministrador;
-import DAO.DAOExeption;
+import DAO.DAOException;
 import model.Administrador;
 import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 
@@ -18,7 +18,7 @@ public class ServiceAdministrador {
         try {
             daoAdministrador.guardar(administrador);
             System.out.println("Administrador guardado");
-        } catch(DAOExeption e) {
+        } catch(DAOException e) {
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -27,7 +27,7 @@ public class ServiceAdministrador {
         try{
             daoAdministrador.modificar(administrador);
             System.out.println("Administrador modificado");
-        } catch(DAOExeption e) {
+        } catch(DAOException e) {
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -37,7 +37,7 @@ public class ServiceAdministrador {
         try{
             administrador = daoAdministrador.buscar(dni);
             return administrador;
-        } catch(DAOExeption e){
+        } catch(DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -46,7 +46,7 @@ public class ServiceAdministrador {
         try{
             daoAdministrador.eliminar(id);
             System.out.println("Administrador eliminado");
-        }catch (DAOExeption e){
+        }catch (DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -56,7 +56,7 @@ public class ServiceAdministrador {
         try {
             administradores = daoAdministrador.buscarTodos();
             return administradores;
-        }catch (DAOExeption e){
+        }catch (DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }

@@ -1,7 +1,7 @@
 package service;
 
 import DAO.DAOEspectaculo;
-import DAO.DAOExeption;
+import DAO.DAOException;
 import model.Espectaculo;
 import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 
@@ -18,7 +18,7 @@ public class ServiceEspectaculo {
         try {
             daoEspectaculo.guardar(espectaculo);
             System.out.println("Espectaculo guardado exitosamente");
-        } catch(DAOExeption e) {
+        } catch(DAOException e) {
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -26,7 +26,7 @@ public class ServiceEspectaculo {
     public void modificar(Espectaculo espectaculo) throws ServiceExeption {
         try{
             daoEspectaculo.modificar(espectaculo);
-        } catch(DAOExeption e) {
+        } catch(DAOException e) {
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -36,7 +36,7 @@ public class ServiceEspectaculo {
         try{
             espectaculo = daoEspectaculo.buscar(id);
             return espectaculo;
-        } catch(DAOExeption e){
+        } catch(DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -45,7 +45,7 @@ public class ServiceEspectaculo {
         try{
             daoEspectaculo.eliminar(id);
             System.out.println("Espectaculo eliminado exitosamente");
-        }catch (DAOExeption e){
+        }catch (DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -55,7 +55,7 @@ public class ServiceEspectaculo {
         try {
             espectaculos = daoEspectaculo.buscarTodos();
             return espectaculos;
-        }catch (DAOExeption e){
+        }catch (DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }

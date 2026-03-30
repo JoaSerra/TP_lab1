@@ -1,6 +1,6 @@
 package service;
 
-import DAO.DAOExeption;
+import DAO.DAOException;
 import DAO.DAOVendedor;
 import model.Vendedor;
 import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
@@ -18,7 +18,7 @@ public class ServiceVendedor {
         try {
             daoVendedor.guardar(vendedor);
             System.out.println("Vendedor registrado");
-        } catch(DAOExeption e) {
+        } catch(DAOException e) {
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -26,7 +26,7 @@ public class ServiceVendedor {
     public void modificar(Vendedor vendedor) throws ServiceExeption {
         try{
             daoVendedor.modificar(vendedor);
-        } catch(DAOExeption e) {
+        } catch(DAOException e) {
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -36,7 +36,7 @@ public class ServiceVendedor {
         try{
             vendedor = daoVendedor.buscar(dni);
             return vendedor;
-        } catch(DAOExeption e){
+        } catch(DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -45,7 +45,7 @@ public class ServiceVendedor {
         try{
             daoVendedor.eliminar(dni);
             System.out.println("Vendedor eliminado");
-        }catch (DAOExeption e){
+        }catch (DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -55,7 +55,7 @@ public class ServiceVendedor {
         try {
             vendedors = daoVendedor.buscarTodos();
             return vendedors;
-        }catch (DAOExeption e){
+        }catch (DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }

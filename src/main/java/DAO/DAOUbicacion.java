@@ -1,16 +1,74 @@
 package DAO;
 
+import model.Administrador;
 import model.Ubicacion;
 import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 
-import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class DAOUbicacion implements IDAO<Ubicacion>{
+public class DAOUbicacion extends DAOAbstract<Ubicacion> {
+
+    String valores = null;
+    Ubicacion elemento = null;
 
     @Override
-    public void guardar(Ubicacion elemento) throws DAOExeption {
+    public String getTabla(){
+        return "UBICACION";
+    }
+    @Override
+    public String getFinder(){
+        return "DNI";
+    }
+    @Override
+    public String valoresInsert(){
+        valores = "(" +elemento.getDni()+
+                "," + elemento.getNombre()+
+                "," + elemento.getApellido()+
+                "," + elemento.getTelefono()+
+                ")";
+
+        return valores;
+    }
+    @Override
+    public String valoresUpdate(){
+        valores = "NOMBRE="+ elemento.getNombre() +
+                ",APELLIDO="+ elemento.getApellido() +
+                ",TELEFONO="+ elemento.getTelefono();
+
+        return valores;
+    }
+    @Override
+    public Ubicacion cargarObjeto(ResultSet rs) throws SQLException {
+        elemento = new Ubicacion();
+
+        elemento.setDni(rs.getInt("DNI"));
+        elemento.setNombre(rs.getString("NOMBRE"));
+        elemento.setApellido(rs.getString("APELLIDO"));
+        elemento.setTelefono(rs.getString("TELEFONO"));
+
+        return elemento;
+    }
+    @Override
+    public ArrayList<Ubicacion> cargarLista(ResultSet rs) throws SQLException {
+        ArrayList<Ubicacion> lista = new ArrayList<>();
+
+        while (rs.next()){
+            elemento = new Ubicacion();
+            elemento.setDni(rs.getInt("DNI"));
+            elemento.setNombre(rs.getString("NOMBRE"));
+            elemento.setApellido(rs.getString("APELLIDO"));
+            elemento.setTelefono(rs.getString("TELEFONO"));
+            lista.add(elemento);
+        }
+        return lista;
+    }
+
+    //ARREGLAR ESTO!!!!!!!!!!
+
+
+    @Override
+    public void guardar(Ubicacion elemento) throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
@@ -30,7 +88,7 @@ public class DAOUbicacion implements IDAO<Ubicacion>{
 
         }catch (SQLException | ClassNotFoundException e){
             e.printStackTrace();
-            throw new DAOExeption("Error al acceder a la base de datos");
+            throw new DAOException("Error al acceder a la base de datos");
         }finally {
             try {
                 if (preparedStatement != null) {
@@ -41,13 +99,13 @@ public class DAOUbicacion implements IDAO<Ubicacion>{
                 }
             }catch (SQLException e){
                 e.printStackTrace();
-                throw new DAOExeption("ERROR");
+                throw new DAOException("ERROR");
             }
         }
     }
 
     @Override
-    public void modificar(Ubicacion elemento) throws DAOExeption {
+    public void modificar(Ubicacion elemento) throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
@@ -68,7 +126,7 @@ public class DAOUbicacion implements IDAO<Ubicacion>{
             System.out.println("Ubicacion modificada");
         }catch (SQLException | ClassNotFoundException e){
             e.printStackTrace();
-            throw new DAOExeption("Error al acceder a la base de datos");
+            throw new DAOException("Error al acceder a la base de datos");
         }finally {
             try {
                 if (preparedStatement != null) {
@@ -79,18 +137,18 @@ public class DAOUbicacion implements IDAO<Ubicacion>{
                 }
             }catch (SQLException e){
                 e.printStackTrace();
-                throw new DAOExeption("ERROR");
+                throw new DAOException("ERROR");
             }
         }
     }
 
 
     @Override
-    public void eliminar(int idUbi) throws DAOExeption{
+    public void eliminar(int idUbi) throws DAOException {
         System.out.println("Este método no funciona para la clase Ubicacion\nUtilice el metodo: eliminarUbicacion(int idUbi, int idEstadio)");
     }
 
-    public void eliminarUbicacion(int idUbi, int idEstadio) throws DAOExeption, JdbcSQLIntegrityConstraintViolationException {
+    public void eliminarUbicacion(int idUbi, int idEstadio) throws DAOException, JdbcSQLIntegrityConstraintViolationException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
@@ -109,7 +167,7 @@ public class DAOUbicacion implements IDAO<Ubicacion>{
             if(e instanceof JdbcSQLIntegrityConstraintViolationException)
                 throw (JdbcSQLIntegrityConstraintViolationException) e;
             else
-                throw new DAOExeption("Error al acceder a la base de datos");
+                throw new DAOException("Error al acceder a la base de datos");
         }finally {
             try {
                 if (preparedStatement != null) {
@@ -120,19 +178,19 @@ public class DAOUbicacion implements IDAO<Ubicacion>{
                 }
             }catch (SQLException e){
                 e.printStackTrace();
-                throw new DAOExeption("ERROR");
+                throw new DAOException("ERROR");
             }
         }
     }
 
 
     @Override
-    public Ubicacion buscar(int dni) throws DAOExeption {
+    public Ubicacion buscar(int dni) throws DAOException {
         System.out.println("Este metodo no funciona en la clase Ubicacion\nUtilice buscarUbicacion(int idUbi, int idEstadio)");
         return null;
     }
 
-    public Ubicacion buscarUbicacion(int idUbi, int idEstadio) throws DAOExeption {
+    public Ubicacion buscarUbicacion(int idUbi, int idEstadio) throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Ubicacion UbiAux = null;
@@ -156,7 +214,7 @@ public class DAOUbicacion implements IDAO<Ubicacion>{
 
         }catch (ClassNotFoundException | SQLException e){
             e.printStackTrace();
-            throw new DAOExeption("Error al acceder a la base de datos");
+            throw new DAOException("Error al acceder a la base de datos");
         }finally {
             try {
                 if (preparedStatement != null) {
@@ -167,14 +225,14 @@ public class DAOUbicacion implements IDAO<Ubicacion>{
                 }
             }catch (SQLException e){
                 e.printStackTrace();
-                throw new DAOExeption("ERROR");
+                throw new DAOException("ERROR");
             }
         }
         return UbiAux;
     }
 
     @Override
-    public ArrayList<Ubicacion> buscarTodos() throws DAOExeption{
+    public ArrayList<Ubicacion> buscarTodos() throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Ubicacion ubiAux;
@@ -197,7 +255,7 @@ public class DAOUbicacion implements IDAO<Ubicacion>{
             }
         }
         catch (ClassNotFoundException | SQLException e){
-            throw new DAOExeption(e.getMessage());
+            throw new DAOException(e.getMessage());
         }
         finally {
             try {
@@ -208,13 +266,13 @@ public class DAOUbicacion implements IDAO<Ubicacion>{
                     connection.close();
                 }
             } catch (SQLException e) {
-                throw new DAOExeption(e.getMessage());
+                throw new DAOException(e.getMessage());
             }
         }
         return ubicaionesAux;
     }
 
-    public ArrayList<Ubicacion> obtenerUbicacionesPorEstadio(int idEstadio) throws DAOExeption {
+    public ArrayList<Ubicacion> obtenerUbicacionesPorEstadio(int idEstadio) throws DAOException {
         ArrayList<Ubicacion> ubicaciones = new ArrayList<>();
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -238,7 +296,7 @@ public class DAOUbicacion implements IDAO<Ubicacion>{
                 ubicaciones.add(ubicacion);
             }
         } catch (ClassNotFoundException | SQLException e) {
-            throw new DAOExeption(e.getMessage());
+            throw new DAOException(e.getMessage());
         } finally {
             try {
                 if (preparedStatement != null) {
@@ -248,7 +306,7 @@ public class DAOUbicacion implements IDAO<Ubicacion>{
                     connection.close();
                 }
             } catch (SQLException e) {
-                throw new DAOExeption(e.getMessage());
+                throw new DAOException(e.getMessage());
             }
         }
         return ubicaciones;

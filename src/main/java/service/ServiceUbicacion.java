@@ -1,12 +1,11 @@
 package service;
 
-import DAO.DAOExeption;
+import DAO.DAOException;
 import DAO.DAOUbicacion;
 import model.Ubicacion;
 import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class ServiceUbicacion {
     private final DAOUbicacion daoUbicacion;
@@ -19,7 +18,7 @@ public class ServiceUbicacion {
         try {
             daoUbicacion.guardar(ubicacion);
             System.out.println("Ubicacion guardada con exito");
-        } catch(DAOExeption e) {
+        } catch(DAOException e) {
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -27,7 +26,7 @@ public class ServiceUbicacion {
     public void modificar(Ubicacion ubicacion) throws ServiceExeption {
         try{
             daoUbicacion.modificar(ubicacion);
-        } catch(DAOExeption e) {
+        } catch(DAOException e) {
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -37,7 +36,7 @@ public class ServiceUbicacion {
         try{
             ubicacion = daoUbicacion.buscarUbicacion(id, idEstadio);
             return ubicacion;
-        } catch(DAOExeption e){
+        } catch(DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -45,7 +44,7 @@ public class ServiceUbicacion {
     public void eliminar(int id) throws ServiceExeption{
         try{
             daoUbicacion.eliminar(id);
-        }catch (DAOExeption e){
+        }catch (DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -54,7 +53,7 @@ public class ServiceUbicacion {
         try{
             daoUbicacion.eliminarUbicacion(id, idEstadio);
             System.out.println("Ubicacion eliminada");
-        }catch (DAOExeption e){
+        }catch (DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -64,7 +63,7 @@ public class ServiceUbicacion {
         try {
             ubicacions = daoUbicacion.buscarTodos();
             return ubicacions;
-        }catch (DAOExeption e){
+        }catch (DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -74,7 +73,7 @@ public class ServiceUbicacion {
         try{
             ubicaciones = daoUbicacion.obtenerUbicacionesPorEstadio(idEstadio);
             return ubicaciones;
-        }catch (DAOExeption e){
+        }catch (DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }

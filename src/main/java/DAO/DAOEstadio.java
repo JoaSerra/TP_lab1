@@ -11,7 +11,7 @@ public class DAOEstadio implements IDAO<Estadio> {
 
 
     @Override
-    public void guardar(Estadio elemento) throws DAOExeption {
+    public void guardar(Estadio elemento) throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
@@ -30,7 +30,7 @@ public class DAOEstadio implements IDAO<Estadio> {
 
         }catch (SQLException | ClassNotFoundException e){
             e.printStackTrace();
-            throw new DAOExeption("Error al acceder a la base de datos");
+            throw new DAOException("Error al acceder a la base de datos");
         }finally {
             try {
                 if (preparedStatement != null) {
@@ -41,13 +41,13 @@ public class DAOEstadio implements IDAO<Estadio> {
                 }
             }catch (SQLException e){
                 e.printStackTrace();
-                throw new DAOExeption("ERROR");
+                throw new DAOException("ERROR");
             }
         }
     }
 
     @Override
-    public void modificar(Estadio elemento) throws DAOExeption {
+    public void modificar(Estadio elemento) throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
@@ -66,7 +66,7 @@ public class DAOEstadio implements IDAO<Estadio> {
 
         }catch (SQLException | ClassNotFoundException e){
             e.printStackTrace();
-            throw new DAOExeption("Error al acceder a la base de datos");
+            throw new DAOException("Error al acceder a la base de datos");
         }finally {
             try {
                 if (preparedStatement != null) {
@@ -77,13 +77,13 @@ public class DAOEstadio implements IDAO<Estadio> {
                 }
             }catch (SQLException e){
                 e.printStackTrace();
-                throw new DAOExeption("ERROR");
+                throw new DAOException("ERROR");
             }
         }
     }
 
     @Override
-    public void eliminar(int idEstadio) throws DAOExeption, JdbcSQLIntegrityConstraintViolationException {
+    public void eliminar(int idEstadio) throws DAOException, JdbcSQLIntegrityConstraintViolationException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -98,7 +98,7 @@ public class DAOEstadio implements IDAO<Estadio> {
             if(e instanceof JdbcSQLIntegrityConstraintViolationException)
                 throw (JdbcSQLIntegrityConstraintViolationException) e;
             else
-                throw new DAOExeption("Error al acceder a la base de datos");
+                throw new DAOException("Error al acceder a la base de datos");
         } finally {
             try {
                 if (preparedStatement != null) {
@@ -109,14 +109,14 @@ public class DAOEstadio implements IDAO<Estadio> {
                 }
             }catch (SQLException e){
                 e.printStackTrace();
-                throw new DAOExeption("ERROR");
+                throw new DAOException("ERROR");
             }
         }
     }
 
 
     @Override
-    public Estadio buscar(int idEstadio) throws DAOExeption {
+    public Estadio buscar(int idEstadio) throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Estadio estadioAux = null;
@@ -138,7 +138,7 @@ public class DAOEstadio implements IDAO<Estadio> {
 
         }catch (ClassNotFoundException | SQLException e){
             e.printStackTrace();
-            throw new DAOExeption("Error al acceder a la base de datos");
+            throw new DAOException("Error al acceder a la base de datos");
         } catch (ServiceExeption e) {
             throw new RuntimeException(e);
         } finally {
@@ -151,14 +151,14 @@ public class DAOEstadio implements IDAO<Estadio> {
                 }
             }catch (SQLException e){
                 e.printStackTrace();
-                throw new DAOExeption("ERROR");
+                throw new DAOException("ERROR");
             }
         }
         return estadioAux;
     }
 
     @Override
-    public ArrayList<Estadio> buscarTodos() throws DAOExeption{
+    public ArrayList<Estadio> buscarTodos() throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Estadio estadioAux;
@@ -180,7 +180,7 @@ public class DAOEstadio implements IDAO<Estadio> {
             }
         }
         catch (ClassNotFoundException | SQLException e){
-            throw new DAOExeption(e.getMessage());
+            throw new DAOException(e.getMessage());
         } catch (ServiceExeption e) {
             throw new RuntimeException(e);
         } finally {
@@ -192,14 +192,14 @@ public class DAOEstadio implements IDAO<Estadio> {
                     connection.close();
                 }
             } catch (SQLException e) {
-                throw new DAOExeption(e.getMessage());
+                throw new DAOException(e.getMessage());
             }
         }
         return estadiosAux;
     }
 
     /*
-    public void cargarUbicaciones(ArrayList<Estadio> estadios) throws DAOExeption {
+    public void cargarUbicaciones(ArrayList<Estadio> estadios) throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
@@ -223,7 +223,7 @@ public class DAOEstadio implements IDAO<Estadio> {
                 }
             }
         } catch (ClassNotFoundException | SQLException e) {
-            throw new DAOExeption(e.getMessage());
+            throw new DAOException(e.getMessage());
         } finally {
             try {
                 if (preparedStatement != null) {
@@ -233,7 +233,7 @@ public class DAOEstadio implements IDAO<Estadio> {
                     connection.close();
                 }
             } catch (SQLException e) {
-                throw new DAOExeption(e.getMessage());
+                throw new DAOException(e.getMessage());
             }
         }
     }

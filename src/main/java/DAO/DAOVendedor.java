@@ -1,22 +1,22 @@
 package DAO;
 
-import model.Administrador;
+import model.Vendedor;
 import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class DAOAdministrador implements IDAO<Administrador>{
+public class DAOVendedor implements IDAO<Vendedor>{
 
     @Override
-    public void guardar(Administrador elemento) throws DAOExeption {
+    public void guardar(Vendedor elemento) throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             Class.forName(DB_JDBC_DRIVER);
-            connection = DriverManager.getConnection(DB_JDBC_URL, DB_JDBC_USER, DB_JDBC_PASS);
-            preparedStatement = connection.prepareStatement("INSERT INTO ADMINISTRADOR VALUES(?,?,?,?)"); //
+            connection = DriverManager.getConnection(DB_JDBC_URL,DB_JDBC_USER,DB_JDBC_PASS);
+            preparedStatement = connection.prepareStatement("INSERT INTO VENDEDOR VALUES(?,?,?,?)"); //
 
             //Valores para setear
             preparedStatement.setInt(1, elemento.getDni());
@@ -28,7 +28,7 @@ public class DAOAdministrador implements IDAO<Administrador>{
 
         }catch (SQLException | ClassNotFoundException e){
             e.printStackTrace();
-            throw new DAOExeption("Error al acceder a la base de datos");
+            throw new DAOException("Error al acceder a la base de datos");
         }finally {
             try {
                 if (preparedStatement != null) {
@@ -39,20 +39,20 @@ public class DAOAdministrador implements IDAO<Administrador>{
                 }
             }catch (SQLException e){
                 e.printStackTrace();
-                throw new DAOExeption("ERROR");
+                throw new DAOException("ERROR");
             }
         }
     }
 
     @Override
-    public void modificar(Administrador elemento) throws DAOExeption {
+    public void modificar(Vendedor elemento) throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_JDBC_URL,DB_JDBC_USER,DB_JDBC_PASS);
-            preparedStatement = connection.prepareStatement("UPDATE ADMINISTRADOR SET NOMBRE=?,APELLIDO=?,TELEFONO=? WHERE DNI=?");
+            preparedStatement = connection.prepareStatement("UPDATE VENDEDOR SET NOMBRE=?,APELLIDO=?,TELEFONO=? WHERE DNI=?");
 
             //Valores a modificar
             preparedStatement.setString(1, elemento.getNombre());
@@ -64,7 +64,7 @@ public class DAOAdministrador implements IDAO<Administrador>{
 
         }catch (SQLException | ClassNotFoundException e){
             e.printStackTrace();
-            throw new DAOExeption("Error al acceder a la base de datos");
+            throw new DAOException("Error al acceder a la base de datos");
         }finally {
             try {
                 if (preparedStatement != null) {
@@ -75,21 +75,20 @@ public class DAOAdministrador implements IDAO<Administrador>{
                 }
             }catch (SQLException e){
                 e.printStackTrace();
-                throw new DAOExeption("ERROR");
+                throw new DAOException("ERROR");
             }
         }
     }
 
 
     @Override
-    public void eliminar(int dni) throws DAOExeption, JdbcSQLIntegrityConstraintViolationException {
+    public void eliminar(int dni) throws DAOException, JdbcSQLIntegrityConstraintViolationException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-
         try {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_JDBC_URL,DB_JDBC_USER,DB_JDBC_PASS);
-            preparedStatement = connection.prepareStatement("DELETE FROM ADMINISTRADOR WHERE DNI=?");
+            preparedStatement = connection.prepareStatement("DELETE FROM VENDEDOR WHERE DNI=?");
             preparedStatement.setInt(1,dni);
 
             preparedStatement.executeUpdate();
@@ -98,7 +97,7 @@ public class DAOAdministrador implements IDAO<Administrador>{
             if(e instanceof JdbcSQLIntegrityConstraintViolationException)
                 throw (JdbcSQLIntegrityConstraintViolationException) e;
             else
-                throw new DAOExeption("Error al acceder a la base de datos");
+                throw new DAOException("Error al acceder a la base de datos");
         }finally {
             try {
                 if (preparedStatement != null) {
@@ -109,35 +108,35 @@ public class DAOAdministrador implements IDAO<Administrador>{
                 }
             }catch (SQLException e){
                 e.printStackTrace();
-                throw new DAOExeption("ERROR");
+                throw new DAOException("ERROR");
             }
         }
     }
 
     @Override
-    public Administrador buscar(int dni) throws DAOExeption {
+    public Vendedor buscar(int dni) throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        Administrador adminAux = null;
+        Vendedor admininAux = null;
 
         try {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_JDBC_URL,DB_JDBC_USER,DB_JDBC_PASS);
-            preparedStatement = connection.prepareStatement("SELECT * FROM ADMINISTRADOR WHERE DNI=?");
+            preparedStatement = connection.prepareStatement("SELECT * FROM VENDEDOR WHERE DNI=?");
             preparedStatement.setInt(1, dni);
             ResultSet rs = preparedStatement.executeQuery();
 
-            while(rs.next()){
-                adminAux = new Administrador();
-                adminAux.setDni(rs.getInt("DNI"));
-                adminAux.setNombre(rs.getString("NOMBRE"));
-                adminAux.setApellido(rs.getString("APELLIDO"));
-                adminAux.setTelefono(rs.getString("TELEFONO"));
+            if(rs.next()){
+                admininAux = new Vendedor();
+                admininAux.setDni(rs.getInt("DNI"));
+                admininAux.setNombre(rs.getString("NOMBRE"));
+                admininAux.setApellido(rs.getString("APELLIDO"));
+                admininAux.setTelefono(rs.getString("TELEFONO"));
             }
 
         }catch (ClassNotFoundException | SQLException e){
             e.printStackTrace();
-            throw new DAOExeption("Error al acceder a la base de datos");
+            throw new DAOException("Error al acceder a la base de datos");
         }finally {
             try {
                 if (preparedStatement != null) {
@@ -148,36 +147,37 @@ public class DAOAdministrador implements IDAO<Administrador>{
                 }
             }catch (SQLException e){
                 e.printStackTrace();
-                throw new DAOExeption("ERROR");
+                throw new DAOException("ERROR");
             }
         }
-        return adminAux;
+        return admininAux;
     }
 
     @Override
-    public ArrayList<Administrador> buscarTodos() throws DAOExeption {
+    public ArrayList<Vendedor> buscarTodos() throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        Administrador adminAux;
-        ArrayList<Administrador> administradoresAux = new ArrayList<>();
+        Vendedor vendedorAux;
+        ArrayList<Vendedor> vendedoresAux = new ArrayList<>();
 
         try{
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_JDBC_URL,DB_JDBC_USER,DB_JDBC_PASS);
-            preparedStatement = connection.prepareStatement("SELECT * FROM ADMINISTRADOR");
+            preparedStatement = connection.prepareStatement("SELECT * FROM VENDEDOR");
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()){
-                adminAux = new Administrador();
-                adminAux.setDni(rs.getInt("DNI"));
-                adminAux.setNombre(rs.getString("NOMBRE"));
-                adminAux.setApellido(rs.getString("APELLIDO"));
-                adminAux.setTelefono(rs.getString("TELEFONO"));
-                administradoresAux.add(adminAux);
+                vendedorAux = new Vendedor();
+                vendedorAux.setDni(rs.getInt("DNI"));
+                vendedorAux.setNombre(rs.getString("NOMBRE"));
+                vendedorAux.setApellido(rs.getString("APELLIDO"));
+                vendedorAux.setTelefono(rs.getString("TELEFONO"));
+                vendedoresAux.add(vendedorAux);
             }
+
         }
         catch (ClassNotFoundException | SQLException e){
-            throw new DAOExeption(e.getMessage());
+            throw new DAOException(e.getMessage());
         }
         finally {
             try {
@@ -188,9 +188,10 @@ public class DAOAdministrador implements IDAO<Administrador>{
                     connection.close();
                 }
             } catch (SQLException e) {
-                throw new DAOExeption(e.getMessage());
+                throw new DAOException(e.getMessage());
             }
         }
-        return administradoresAux;
+        return vendedoresAux;
     }
 }
+

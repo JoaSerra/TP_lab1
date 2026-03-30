@@ -1,11 +1,10 @@
 package service;
 
 import DAO.DAOEstadio;
-import DAO.DAOExeption;
+import DAO.DAOException;
 import model.Estadio;
 import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 
 public class ServiceEstadio {
@@ -19,7 +18,7 @@ public class ServiceEstadio {
         try {
             daoEstadio.guardar(estadio);
             System.out.println("Estadio guardado");
-        } catch(DAOExeption e) {
+        } catch(DAOException e) {
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -27,7 +26,7 @@ public class ServiceEstadio {
     public void modificar(Estadio estadio) throws ServiceExeption {
         try{
             daoEstadio.modificar(estadio);
-        } catch(DAOExeption e) {
+        } catch(DAOException e) {
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -37,7 +36,7 @@ public class ServiceEstadio {
         try{
             estadio = daoEstadio.buscar(id);
             return estadio;
-        } catch(DAOExeption e){
+        } catch(DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -46,7 +45,7 @@ public class ServiceEstadio {
         try{
             daoEstadio.eliminar(id);
             System.out.println("Estadio eliminado");
-        }catch (DAOExeption e){
+        }catch (DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }
@@ -56,7 +55,7 @@ public class ServiceEstadio {
         try {
             estadios = daoEstadio.buscarTodos();
             return estadios;
-        }catch (DAOExeption e){
+        }catch (DAOException e){
             throw new ServiceExeption(e.getMessage());
         }
     }
